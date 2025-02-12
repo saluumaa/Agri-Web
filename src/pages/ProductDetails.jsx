@@ -19,7 +19,7 @@ import {
   Tab,
   TabContent,
   SpecificationGrid
-} from '../styles/ProductDetailStyle';
+} from '../styles/productDetailStyle';
 
 export default function ProductDetails() {
   const { id } = useParams();

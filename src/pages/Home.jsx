@@ -231,7 +231,7 @@ export default function Home() {
                 <div className="date">{post.date}</div>
                 <h3 className="text-xl font-bold mb-2">{post.title}</h3>
                 <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                <Button to="/blog" className="text-sm px-4 py-2">
+                <Button className="text-sm px-4 py-2">
                   Read More
                   <ChevronRight size={16} />
                 </Button>

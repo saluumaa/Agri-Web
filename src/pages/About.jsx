@@ -23,7 +23,7 @@ export default function About() {
 
   return (
     <motion.div initial="initial" animate="animate" exit="exit" variants={fadeInUp}>
-      <div className='max-w-7xl bg-green-500 h-32 relative rounded-full'> 
+      <div className='max-w-7xl mx-auto bg-green-500 h-32 relative rounded-full'> 
             <div className='absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 opacity-40 rounded-full
             '>
               <img src="./trees-image.png" alt="about-hero" className="w-full h-full object-cover rounded-full" />
