@@ -1,18 +1,21 @@
-import { Star, Package, AlertCircle } from 'lucide-react';
+import { Star, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
-// import { Product } from '../../types/index';
-import { Card, ImageContainer, StockBadge, Content, Rating, Price } from '../../styles/productCardStyle';
+import {
+  Card, ImageContainer, StockBadge, Content, Rating, Price
+} from '../../styles/productCardStyle';
 
 export default function ProductCard({ product }) {
+  if (!product) return null; // Prevent crash if product is undefined
+
+  const productImage = product.images?.length
+    ? product.images[Math.floor(Math.random() * product.images.length)]
+    : '/fallback-image.jpg'; // Default image
+
   return (
-    <Card
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.2 }}
-    >
+    <Card whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
       <Link to={`/products/${product.id}`}>
         <ImageContainer>
-          <img src={product.images[Math.floor(Math.random() * product.images.length)]}
-           alt={product.name} />
+          <img src={productImage} alt={product.name} loading="lazy" />
           <StockBadge $inStock={product.stock > 0}>
             {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
           </StockBadge>
@@ -30,11 +33,15 @@ export default function ProductCard({ product }) {
                 />
               ))}
             </div>
-            <span className="reviews">({product.reviews})</span>
+            <span className="reviews">
+              {product.reviews > 0 ? `(${product.reviews})` : 'No reviews'}
+            </span>
           </Rating>
-          <p className="text-gray-600 text-sm mb-4">{product.description}</p>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {product.description}
+          </p>
           <Price>
-            <span>${product.price.toFixed(2)}</span>
+            <span>${product.price?.toFixed(2) || '0.00'}</span>
             {product.stock > 0 && (
               <span className="text-sm text-gray-500 flex items-center gap-1">
                 <Package size={16} />

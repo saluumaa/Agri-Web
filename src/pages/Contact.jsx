@@ -82,7 +82,7 @@ export default function Contact() {
               <div>
                 <h3 className="font-bold">Email</h3>
                 <p>
-                  <a href={`mailto:${pagesConfig.contact.email}`} />
+                <a href={`mailto:${pagesConfig.contact.email}`}>{pagesConfig.contact.email}</a>
                 </p>
               </div>
             </div>
@@ -108,12 +108,12 @@ export default function Contact() {
                 <h3 className="font-bold">Business Hours</h3>
                 <p>
                   {pagesConfig.contact.bussinessHours.map((item, index) => (
-                    <span key={index}>
-                      {item.day} - {item.hours}
-                      <br />
-                    </span>
+                    <p key={index} className="mb-1">
+                      <span className="font-semibold">{item.day}:</span> {item.hours}
+                    </p>
                   ))}
                 </p>
+
               </div>
             </div>
           </motion.div>
@@ -140,7 +140,7 @@ export default function Contact() {
                 {...register('email')}
                 className={errors.email ? 'border-red-500' : ''}
               />
-              {errors.email && <p className="error">{errors.email.message}</p>}
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
             </div>
 
             <div className="form-group">

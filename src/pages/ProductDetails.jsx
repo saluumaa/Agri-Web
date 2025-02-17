@@ -26,7 +26,45 @@ export default function ProductDetails() {
   const [activeTab, setActiveTab] = useState('description');
   const [selectedVariant, setSelectedVariant] = useState('25kg');
   const product = getProductById(id);
- 
+
+  if (!product) {
+    return <p className="text-center text-red-500">Product not found.</p>;
+  }
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "description":
+        return <p>{product.description}</p>;
+      case "specifications":
+        return (
+          <SpecificationGrid>
+            {Object.entries(product.specifications).map(([key, value]) => (
+              <div key={key} className="spec-item">
+                <h4>{key}</h4>
+                <p className="text-gray-600">{value}</p>
+              </div>
+            ))}
+          </SpecificationGrid>
+        );
+      case "usage":
+        return (
+          <div className="grid gap-6">
+            <div>
+              <h3 className="text-lg font-bold mb-2">Usage Instructions</h3>
+              <ul className="pl-6 space-y-2">
+                {product.usage?.split("\n").map((line, i) => (
+                  <li key={i}>{line.trim()}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+  
+
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -50,11 +88,13 @@ export default function ProductDetails() {
                   />
                 ))}
               </div>
-              <span className="count">{product.reviews} reviews</span>
+
+              <span className="count">
+                {product.reviews > 0 ? `${product.reviews} reviews` : "No reviews yet"}
+              </span>
             </Rating>
 
             <div className="price">${product.price}</div>
-
             <Features>
               <Feature>
                 <Truck />
@@ -104,7 +144,7 @@ export default function ProductDetails() {
           </ProductInfo>
         </ProductGrid>
 
-        <Tabs>
+        {/* <Tabs>
           <Tab active={activeTab === 'description'} onClick={() => setActiveTab('description')}>
             Description
           </Tab>
@@ -114,9 +154,9 @@ export default function ProductDetails() {
           <Tab active={activeTab === 'usage'} onClick={() => setActiveTab('usage')}>
             Usage Instructions
           </Tab>
-        </Tabs>
+        </Tabs> */}
 
-        <AnimatePresence mode="wait">
+        {/* <AnimatePresence mode="wait">
           {activeTab === 'description' && (
             <TabContent key="description" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
               <p>{product.description}</p>
@@ -141,15 +181,15 @@ export default function ProductDetails() {
               <div className="grid gap-6">
                 <div>
                   <h3 className="text-lg font-bold mb-2">Usage Instructions</h3>
-                  <ul className="list-disc pl-6 space-y-2 ">
+                  <ul className={`pl-6 space-y-2 ${hideBullets ? "list-none" : "list-disc"}`}>
                     {product.usage.split('\n').filter(Boolean).map((line, i) => (
-                      <li className='list-none' key={i}>{line.trim()}</li>
+                      <li  key={i}>{line.trim()}</li>
                     ))}
                   </ul>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold mb-2">Storage Instructions</h3>
-                  <ul className="list-disc pl-6 space-y-2">
+                  <ul className={`pl-6 space-y-2 ${hideBullets ? "list-none" : "list-disc"}`}>
                     {product.storage.split('\n').filter(Boolean).map((line, i) => (
                       <li className='list-none' key={i}>{line.trim()}</li>
                     ))}
@@ -158,7 +198,15 @@ export default function ProductDetails() {
               </div>
             </TabContent>
           )}
+        </AnimatePresence> */}
+
+        {/* {renderTabContent()} */}
+        <AnimatePresence mode="wait">
+          <TabContent key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+            {renderTabContent()}
+          </TabContent>
         </AnimatePresence>
+
       </ProductContainer>
     </motion.div>
   );

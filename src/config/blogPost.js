@@ -1,7 +1,7 @@
 export const blogPosts = [
     {
       id: '1',
-      image: './post-images/agriculture.png',
+      image: '../post-images/agriculture.png',
       date: 'October 10, 2023',
       title: 'The Future of Agriculture',
       excerpt: 'Discover how technology is transforming the agricultural industry.',
@@ -10,7 +10,7 @@ export const blogPosts = [
     },
     {
       id: '2',
-      image: './post-images/farming.png',
+      image: '../post-images/farming.png',
       date: 'October 15, 2023',
       title: 'Sustainable Farming Practices',
       excerpt: 'Learn about eco-friendly farming methods that benefit the planet.',
@@ -19,7 +19,7 @@ export const blogPosts = [
     },
     {
       id: '3',
-      image: './post-images/farmTools.png',
+      image: '../post-images/farmTools.png',
       date: 'October 20, 2023',
       title: 'Innovations in Crop Management',
       excerpt: 'Explore the latest tools and techniques for managing crops efficiently.',

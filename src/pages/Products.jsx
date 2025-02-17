@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Grid, List, ArrowUpDown, ArrowBigLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -21,36 +21,51 @@ export default function Products() {
   const { state, dispatch } = useApp();
   const [loading, setLoading] = useState(false);
 
-  const filteredProducts = products.filter((product) => {
-    if (state.filters.category && product.category !== state.filters.category) return false;
-    if (state.filters.search && !product.name.toLowerCase().includes(state.filters.search.toLowerCase()))
-      return false;
-    if (product.price < state.filters.priceRange[0] || product.price > state.filters.priceRange[1])
-      return false;
-    return true;
-  });
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      if (state.filters.category.length > 0 && !state.filters.category.includes(product.category)) return false;
+  
+      if (state.filters.brand.length > 0 && !state.filters.brand.includes(product.brand)) return false;
 
-  const sortProducts = (products) => {
+      if (state.filters.search && !product.name.toLowerCase().includes(state.filters.search.toLowerCase())) return false;
+  
+      if (product.price < state.filters.priceRange[0] || product.price > state.filters.priceRange[1]) return false;
+  
+      if (state.filters.origin && product.origin !== state.filters.origin) return false;
+  
+      if (state.filters.isOrganic !== null && product.isOrganic !== state.filters.isOrganic) return false;
+  
+      return true;
+    });
+  }, [state.filters, products]);
+  
+  
+  const sortedProducts = useMemo(() => {
     switch (state.filters.sortBy) {
       case 'price':
-        return [...products].sort((a, b) => a.price - b.price);
+        return [...filteredProducts].sort((a, b) => a.price - b.price);
       case 'name':
-        return [...products].sort((a, b) => a.name.localeCompare(b.name));
+        return [...filteredProducts].sort((a, b) => a.name.localeCompare(b.name));
       case 'popularity':
-        return [...products].sort((a, b) => b.reviews - a.reviews);
+        return [...filteredProducts].sort((a, b) => b.reviews - a.reviews);
       default:
-        return products;
+        return filteredProducts;
     }
-  };
+  }, [filteredProducts, state.filters.sortBy]);
+  
 
-  const sortedProducts = sortProducts(filteredProducts);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <ProductsContainer>
       <div className='-mt-9 mb-5 max-w-7xl bg-green-500 min-h-40 relative rounded-xl'> 
         <div className='absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 opacity-40 rounded-xl'>
-            <img src="./trees-image.png" alt="about-hero" className="w-full h-full object-cover rounded-xl" />
+            <img
+              src="./trees-image.png"
+              alt="about-hero"
+              className="w-full h-full object-cover rounded-xl"
+              loading="lazy"
+            />
           </div>
           <div className='absolute inset-0 flex flex-col items-center justify-center'>
           
@@ -78,7 +93,13 @@ export default function Products() {
           <div>
             <Controls>
               <ViewToggle>
-                <button
+              <AnimatePresence>
+                <motion.button
+                  key={state.filters.view}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                   className={state.filters.view === 'grid' ? 'active' : ''}
                   onClick={() =>
                     dispatch({
@@ -88,7 +109,9 @@ export default function Products() {
                   }
                 >
                   <Grid size={20} />
-                </button>
+                </motion.button>
+              </AnimatePresence>
+
                 <button
                   className={state.filters.view === 'list' ? 'active' : ''}
                   onClick={() =>
@@ -129,8 +152,12 @@ export default function Products() {
                   exit={{ opacity: 0 }}
                   className="flex justify-center items-center h-64"
                 >
-                  Loading...
-                </motion.div>
+                 <div className="animate-pulse flex flex-col space-y-3">
+                  <div className="h-40 bg-gray-300 rounded-md"></div>
+                  <div className="h-6 bg-gray-300 w-3/4 rounded-md"></div>
+                  <div className="h-4 bg-gray-300 w-1/2 rounded-md"></div>
+                </div>
+              </motion.div>
               ) : sortedProducts.length > 0 ? (
                 <ProductGrid $view={state.filters.view}>
                   {sortedProducts.map((product) => (
